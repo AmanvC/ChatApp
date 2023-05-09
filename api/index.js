@@ -1,6 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const db = require("./config/mongoose");
+const colors = require("colors");
+db();
 // dotenv.config();
 const port = process.env.PORT;
 
@@ -13,5 +16,5 @@ app.listen(port, (err) => {
     console.log(`Error in starting the express server: ${err}`);
     return;
   }
-  console.log(`Server is running on port: ${port}`);
+  console.log(`Server is running on port: ${port}`.green.bold);
 });

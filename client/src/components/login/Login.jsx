@@ -7,7 +7,8 @@ import {
   InputRightElement,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -15,14 +16,18 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [submittingForm, setSubmittingForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useContext(AuthContext);
 
   const handleChangeInput = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = () => {
-    setSubmittingForm(true);
+  const handleSubmit = async () => {
+    setLoading(true);
+    await login(inputs.email, inputs.password);
+    setLoading(false);
   };
 
   return (
@@ -60,7 +65,7 @@ const Login = () => {
         colorScheme="teal"
         width="100%"
         style={{ marginTop: 30 }}
-        isLoading={submittingForm}
+        isLoading={loading}
         loadingText="Logging In"
         onClick={handleSubmit}
       >

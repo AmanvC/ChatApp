@@ -42,22 +42,25 @@ module.exports.signup = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.status(400).json({
         success: false,
         message: "User does not exist, please signup to continue!",
       });
     }
-    const checkPassword = await bcrypt.compare(password, user.password);
+    const checkPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     if (!checkPassword) {
       return res.status(400).json({
         success: false,
         message: "Invalid email or password!",
       });
     }
-    const token = jwt.sign(user.id, process.env.JWT_SECRET);
+    const { password, ...otherData } = user;
+    const token = jwt.sign(otherData, process.env.JWT_SECRET);
     return res.status(200).json({
       success: true,
       message: "User created successfully!",

@@ -74,3 +74,26 @@ module.exports.login = async (req, res) => {
     });
   }
 };
+
+module.exports.searchUser = async (req, res) => {
+  try {
+    const query = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+    const users = await User.find(query)
+      .find({ _id: { $ne: req.user._id } })
+      .select("-password");
+    return res.send(users);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error!",
+    });
+  }
+};

@@ -14,6 +14,9 @@ export const AuthContext = createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [allChats, setAllChats] = useState([]);
   const toast = useToast();
 
   const navigate = useNavigate();
@@ -24,13 +27,16 @@ export const AuthContextProvider = ({ children }) => {
       let user = jwt(userToken);
       setCurrentUser(user);
     }
+    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     try {
       const res = await makeRequest().post("/auth/login", { email, password });
-      setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, res.data.token);
-      setCurrentUser(jwt(res.data.token));
+      setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, res?.data?.token);
+      const allChatsRes = await makeRequest().get("/chats/get-all");
+      setAllChats(allChatsRes?.data?.data);
+      setCurrentUser(jwt(res?.data?.token));
       navigate("/chats");
 
       toast({
@@ -57,10 +63,29 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
     setCurrentUser(null);
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out.",
+      status: "success",
+      duration: 4000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        login,
+        logout,
+        loading,
+        selectedChat,
+        setSelectedChat,
+        allChats,
+        setAllChats,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

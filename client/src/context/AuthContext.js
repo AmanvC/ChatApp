@@ -16,7 +16,6 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [allChats, setAllChats] = useState([]);
   const toast = useToast();
 
   const navigate = useNavigate();
@@ -34,8 +33,6 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const res = await makeRequest().post("/auth/login", { email, password });
       setItemInLocalStorage(LOCALSTORAGE_TOKEN_KEY, res?.data?.token);
-      const allChatsRes = await makeRequest().get("/chats/get-all");
-      setAllChats(allChatsRes?.data?.data);
       setCurrentUser(jwt(res?.data?.token));
       navigate("/chats");
 
@@ -82,8 +79,6 @@ export const AuthContextProvider = ({ children }) => {
         loading,
         selectedChat,
         setSelectedChat,
-        allChats,
-        setAllChats,
       }}
     >
       {children}

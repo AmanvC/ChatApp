@@ -42,7 +42,7 @@ module.exports.signup = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email }).lean();
     if (!user) {
       return res.status(400).json({
         success: false,

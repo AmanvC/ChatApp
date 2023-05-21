@@ -29,8 +29,9 @@ import ProfileModal from "./profileModal/ProfileModal";
 import { makeRequest } from "../../utils/axios";
 import UserListItem from "./userListItem/UserListItem";
 import { NO_USER_IMAGE } from "../../utils/constants";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
-const SideDrawer = () => {
+const SideDrawer = ({ setAllChats, allChats }) => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [searchResultLoading, setSeachResultLoading] = useState(false);
@@ -70,6 +71,9 @@ const SideDrawer = () => {
     try {
       setChatLoading(true);
       const res = await makeRequest().post("/chats/create", { userId });
+      if (!allChats.find((c) => c._id === res.data?.data[0]?._id)) {
+        setAllChats((prev) => [res.data?.data[0], ...prev]);
+      }
       setChatLoading(false);
       setSelectedChat(res.data.data);
       onClose();
@@ -224,6 +228,7 @@ const SideDrawer = () => {
                 />
               ))
             )}
+            {chatLoading && <LoadingSpinner />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

@@ -5,3 +5,7 @@
   display: flex;
   background: linear-gradient(to top right, #13547a, #80d0c7, #13547a);
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

@@ -21,11 +21,13 @@ const UserListItem = ({ user, handleFunction }) => {
       mb="3"
       borderRadius="lg"
       boxShadow="lg"
+      w="100%"
     >
       <Avatar
         mr="5"
         size="lg"
         bg="#006666"
+        color="white"
         name={user.name}
         src={user.picture}
       />

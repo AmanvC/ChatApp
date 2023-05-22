@@ -57,6 +57,7 @@ module.exports.getAllChats = async (req, res) => {
       .populate("groupAdmins", "-password")
       .populate("latestMessage")
       .populate("latestMessage.sender", "-password")
+      .sort("-createdAt")
       .sort({ updatedAt: 1 });
     return res.status(200).json({
       success: true,

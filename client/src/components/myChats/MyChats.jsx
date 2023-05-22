@@ -6,6 +6,7 @@ import { makeRequest } from "../../utils/axios";
 import { AddIcon } from "@chakra-ui/icons";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import { getSenderName } from "../../config/ChatLogic";
+import GroupChatModal from "./groupChatModal/GroupChatModal";
 
 const MyChats = ({ setAllChats, allChats }) => {
   const { selectedChat, setSelectedChat, currentUser } =
@@ -40,13 +41,13 @@ const MyChats = ({ setAllChats, allChats }) => {
       alignItems="center"
       p="3"
       bg="white"
-      w={{ base: "100%", md: "40%" }}
+      w={{ base: "100%", md: "33%" }}
       borderRadius="lg"
       boxShadow="dark-lg"
     >
       <Box
         p="3"
-        fontSize={{ base: "2em", md: "1.6em" }}
+        fontSize={{ base: "2em", md: "1.1em", lg: "1.55em" }}
         fontFamily="Work sans"
         color="black"
         width="100%"
@@ -55,9 +56,16 @@ const MyChats = ({ setAllChats, allChats }) => {
         alignItems="center"
       >
         All Chats
-        <Button display="flex" p="3" rightIcon={<AddIcon />}>
-          New Group Chat
-        </Button>
+        <GroupChatModal allChats={allChats} setAllChats={setAllChats}>
+          <Button
+            display="flex"
+            p="3"
+            fontSize={{ md: "12px", lg: "16px" }}
+            rightIcon={<AddIcon fontSize="12px" />}
+          >
+            Create Group
+          </Button>
+        </GroupChatModal>
       </Box>
       <Box
         display="flex"

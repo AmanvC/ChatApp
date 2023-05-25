@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import "./chatPage.scss";
-import { AuthContext } from "../../context/AuthContext";
 import { Box } from "@chakra-ui/react";
 import SideDrawer from "../../components/sideDrawer/SideDrawer";
 import MyChats from "../../components/myChats/MyChats";
@@ -8,7 +7,7 @@ import ChatBox from "../../components/chatBox/ChatBox";
 
 const ChatPage = () => {
   const [allChats, setAllChats] = useState([]);
-  const { currentUser } = useContext(AuthContext);
+  const [fetchAgain, setFetchAgain] = useState(false);
 
   return (
     <div className="chatPage">
@@ -20,8 +19,14 @@ const ChatPage = () => {
         h="90vh"
         p="10px"
       >
-        <MyChats setAllChats={setAllChats} allChats={allChats} />
-        <ChatBox />
+        <Box w="100%" display="flex" gap="20px">
+          <MyChats
+            setAllChats={setAllChats}
+            allChats={allChats}
+            fetchAgain={fetchAgain}
+          />
+          <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+        </Box>
       </Box>
     </div>
   );

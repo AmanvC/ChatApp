@@ -8,7 +8,7 @@ import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import { getSenderName } from "../../config/ChatLogic";
 import GroupChatModal from "./groupChatModal/GroupChatModal";
 
-const MyChats = ({ setAllChats, allChats }) => {
+const MyChats = ({ setAllChats, allChats, fetchAgain }) => {
   const { selectedChat, setSelectedChat, currentUser } =
     useContext(AuthContext);
 
@@ -16,7 +16,7 @@ const MyChats = ({ setAllChats, allChats }) => {
 
   useEffect(() => {
     fetchChats();
-  }, [currentUser]);
+  }, [fetchAgain]);
 
   const fetchChats = async () => {
     try {
@@ -47,7 +47,7 @@ const MyChats = ({ setAllChats, allChats }) => {
     >
       <Box
         p="3"
-        fontSize={{ base: "2em", md: "1.1em", lg: "1.55em" }}
+        fontSize={{ base: "2em", md: "1.15em", lg: "1.55em" }}
         fontFamily="Work sans"
         color="black"
         width="100%"
@@ -60,7 +60,7 @@ const MyChats = ({ setAllChats, allChats }) => {
           <Button
             display="flex"
             p="3"
-            fontSize={{ md: "12px", lg: "16px" }}
+            fontSize={{ sm: "20px", md: "13px", lg: "16px" }}
             rightIcon={<AddIcon fontSize="12px" />}
           >
             Create Group

@@ -60,6 +60,7 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
     setCurrentUser(null);
+    setSelectedChat(null);
     toast({
       title: "Logged out successfully",
       description: "You have been logged out.",

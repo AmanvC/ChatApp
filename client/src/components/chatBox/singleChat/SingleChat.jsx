@@ -16,32 +16,75 @@ import UpdateGroupChatModal from "./updateGroupChatModal/UpdateGroupChatModal";
 import ProfileModal from "../../sideDrawer/profileModal/ProfileModal";
 import { makeRequest } from "../../../utils/axios";
 import ChatWindow from "./chatWindow/ChatWindow";
+import Lottie from "react-lottie";
+import animationData from "../../../animations/typing-animation.json";
+
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000";
+let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+
   const { currentUser, selectedChat, setSelectedChat } =
     useContext(AuthContext);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    // rendererSettings: {
+    //   preserveAspectRatio: "xMidYMid slice",
+    // },
+  };
 
   const toast = useToast();
 
   useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", currentUser);
+    socket.on("connected", () => setSocketConnected(true));
+
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, []);
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        // GIVE NOTIFICATION
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
+
+  useEffect(() => {
     fetchAllMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
   const fetchAllMessages = async () => {
     if (!selectedChat) {
       return;
     }
-
     try {
       setLoading(true);
       const res = await makeRequest().get(`/messages/${selectedChat._id}`);
       setMessages(res.data?.data);
       setLoading(false);
       console.log(res.data.data);
+      socket.emit("join chat", selectedChat._id);
     } catch (err) {
       toast({
         title: "Something went wrong!",
@@ -58,11 +101,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (e.key === "Enter" && newMessage) {
       try {
         setNewMessage("");
+        socket.emit("stop typing", selectedChat._id);
+        setIsTyping(false);
         const res = await makeRequest().post("/messages", {
           chatId: selectedChat._id,
           content: newMessage,
         });
         if (res.data?.success) {
+          socket.emit("new message", res.data?.data);
           setMessages((prev) => [...prev, res.data?.data]);
         }
       } catch (err) {
@@ -81,7 +127,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const handleTypingMessage = (e) => {
     const inp = e.target.value.trimStart();
     setNewMessage(inp);
+
     // Typing indicator logic
+    if (!socketConnected) return;
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    const timerLength = 2000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDifference = timeNow - lastTypingTime;
+      console.log(timeDifference);
+      if (timeDifference >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
   return (
@@ -169,6 +232,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             ) : (
               <Box overflowY="scroll" padding="10px">
                 <ChatWindow messages={messages} selectedChat={selectedChat} />
+                {isTyping && (
+                  <Lottie
+                    width="70px"
+                    style={{ marginLeft: -10, height: 30, marginTop: 10 }}
+                    options={defaultOptions}
+                  />
+                )}
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">

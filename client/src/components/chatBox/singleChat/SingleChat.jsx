@@ -1,14 +1,88 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { Avatar, Box, IconButton, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  FormControl,
+  IconButton,
+  Input,
+  Spinner,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { ArrowBackIcon, InfoIcon } from "@chakra-ui/icons";
 import { getSenderFullDetails, getSenderName } from "../../../config/ChatLogic";
 import UpdateGroupChatModal from "./updateGroupChatModal/UpdateGroupChatModal";
 import ProfileModal from "../../sideDrawer/profileModal/ProfileModal";
+import { makeRequest } from "../../../utils/axios";
+import ChatWindow from "./chatWindow/ChatWindow";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+
   const { currentUser, selectedChat, setSelectedChat } =
     useContext(AuthContext);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    fetchAllMessages();
+  }, [selectedChat]);
+
+  const fetchAllMessages = async () => {
+    if (!selectedChat) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await makeRequest().get(`/messages/${selectedChat._id}`);
+      setMessages(res.data?.data);
+      setLoading(false);
+      console.log(res.data.data);
+    } catch (err) {
+      toast({
+        title: "Something went wrong!",
+        description: "Please try again!",
+        type: "error",
+        duration: "4s",
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
+
+  const sendMessage = async (e) => {
+    if (e.key === "Enter" && newMessage) {
+      try {
+        setNewMessage("");
+        const res = await makeRequest().post("/messages", {
+          chatId: selectedChat._id,
+          content: newMessage,
+        });
+        if (res.data?.success) {
+          setMessages((prev) => [...prev, res.data?.data]);
+        }
+      } catch (err) {
+        toast({
+          title: "Something went wrong!",
+          description: "Cannot send the message!",
+          type: "error",
+          duration: "4s",
+          isClosable: true,
+          position: "top",
+        });
+      }
+    }
+  };
+
+  const handleTypingMessage = (e) => {
+    const inp = e.target.value.trimStart();
+    setNewMessage(inp);
+    // Typing indicator logic
+  };
 
   return (
     <>
@@ -68,6 +142,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
+                  fetchAllMessages={fetchAllMessages}
                 />
               </Box>
             )}
@@ -83,7 +158,30 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             borderRadius="lg"
             overflowY="hidden"
           >
-            {/* Show Messages Here */}
+            {loading ? (
+              <Spinner
+                size="xl"
+                w="20"
+                h="20"
+                alignSelf="center"
+                margin="auto"
+              />
+            ) : (
+              <Box overflowY="scroll" padding="10px">
+                <ChatWindow messages={messages} selectedChat={selectedChat} />
+              </Box>
+            )}
+            <FormControl onKeyDown={sendMessage} isRequired mt="3">
+              <Input
+                type="text"
+                variant="filled"
+                bg="white"
+                placeholder="Type here..."
+                _focus={{ backgroundColor: "white", border: "none" }}
+                onChange={handleTypingMessage}
+                value={newMessage}
+              />
+            </FormControl>
           </Box>
         </>
       ) : (

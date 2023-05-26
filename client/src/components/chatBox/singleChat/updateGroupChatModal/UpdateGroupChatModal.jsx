@@ -25,7 +25,11 @@ import UserBadgeItem from "../../../myChats/groupChatModal/userBadgeItem/UserBad
 import UserListItem from "../../../sideDrawer/userListItem/UserListItem";
 import { makeRequest } from "../../../../utils/axios";
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({
+  fetchAgain,
+  setFetchAgain,
+  fetchAllMessages,
+}) => {
   const { selectedChat, currentUser, setSelectedChat } =
     useContext(AuthContext);
   const [groupChatName, setGroupChatName] = useState(selectedChat.chatName);
@@ -49,6 +53,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       console.log(res);
       setSelectedChat(res?.data?.data);
       setFetchAgain(!fetchAgain);
+      fetchAllMessages();
       toast({
         title: "User removed successfully.",
         status: "success",

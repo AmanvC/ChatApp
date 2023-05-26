@@ -16,7 +16,7 @@ const MyChats = ({ setAllChats, allChats, fetchAgain }) => {
 
   useEffect(() => {
     fetchChats();
-  }, [fetchAgain]);
+  }, [fetchAgain, setSelectedChat]);
 
   const fetchChats = async () => {
     try {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import {
   Avatar,
@@ -145,11 +145,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView();
+  }, [messages, isTyping]);
+
   return (
     <>
       {selectedChat ? (
         <>
-          <Text
+          <Box
             fontSize={{ base: "1.6em", md: "1.7em" }}
             pb="3"
             px="2"
@@ -163,6 +169,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat(null)}
+              marginRight="10px"
             />
             {!selectedChat.isGroupChat ? (
               <Box
@@ -199,7 +206,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 borderBottom="2px solid lightgray"
                 pb="3"
               >
-                {selectedChat.chatName}
+                <Text fontSize="30px" fontWeight="600">
+                  {selectedChat.chatName}
+                </Text>
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
@@ -207,7 +216,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 />
               </Box>
             )}
-          </Text>
+          </Box>
           <Box
             display="flex"
             flexDir="column"
@@ -237,6 +246,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     options={defaultOptions}
                   />
                 )}
+                <div ref={bottomRef} />
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">

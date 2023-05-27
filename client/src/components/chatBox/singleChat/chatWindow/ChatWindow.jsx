@@ -1,7 +1,6 @@
 import { Avatar, Box, HStack, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
-import ScrollToBottom from "react-scroll-to-bottom";
 import { isSameSender } from "../../../../config/ChatLogic";
 import { getRandomColor } from "../../../../config/RandomColor";
 
@@ -9,7 +8,7 @@ const ChatWindow = ({ messages, selectedChat }) => {
   const { currentUser } = useContext(AuthContext);
 
   return (
-    <ScrollToBottom>
+    <>
       <Text textAlign="center" mb="20px" opacity="0.4">
         This is the beginning of the chat.
       </Text>
@@ -68,7 +67,7 @@ const ChatWindow = ({ messages, selectedChat }) => {
           )}
         </Box>
       ))}
-    </ScrollToBottom>
+    </>
   );
 };
 

@@ -84,7 +84,7 @@ const GroupChatModal = ({ children, allChats, setAllChats }) => {
         return;
       }
     }
-    setSelectedUsers((prev) => [...prev, user]);
+    setSelectedUsers([...selectedUsers, user]);
     setSearchUser("");
     setSearchResults([]);
   };
@@ -108,7 +108,7 @@ const GroupChatModal = ({ children, allChats, setAllChats }) => {
         isClosable: true,
         position: "top",
       });
-      setAllChats((prev) => [res.data?.data, ...prev]);
+      setAllChats([res.data?.data, ...allChats]);
       setSelectedChat(res.data?.data);
       onClose();
     } catch (err) {

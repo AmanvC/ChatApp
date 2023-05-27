@@ -33,8 +33,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
-  const { currentUser, selectedChat, setSelectedChat } =
-    useContext(AuthContext);
+  const {
+    currentUser,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+  } = useContext(AuthContext);
 
   const defaultOptions = {
     loop: true,
@@ -63,6 +68,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
         // GIVE NOTIFICATION
+        if (!notification?.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -108,7 +117,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         });
         if (res.data?.success) {
           socket.emit("new message", res.data?.data);
-          setMessages((prev) => [...prev, res.data?.data]);
+          setMessages([...messages, res.data?.data]);
         }
       } catch (err) {
         toast({

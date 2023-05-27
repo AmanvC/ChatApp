@@ -16,6 +16,7 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [notification, setNotification] = useState([]);
   const toast = useToast();
 
   const navigate = useNavigate();
@@ -79,6 +80,8 @@ export const AuthContextProvider = ({ children }) => {
         loading,
         selectedChat,
         setSelectedChat,
+        notification,
+        setNotification,
       }}
     >
       {children}

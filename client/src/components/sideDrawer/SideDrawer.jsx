@@ -75,7 +75,7 @@ const SideDrawer = ({ setAllChats, allChats }) => {
         setAllChats((prev) => [res.data?.data[0], ...prev]);
       }
       setChatLoading(false);
-      setSelectedChat(res.data.data);
+      setSelectedChat(res.data.data[0]);
       onClose();
       setSearchResult(null);
       setSearch("");
@@ -131,12 +131,14 @@ const SideDrawer = ({ setAllChats, allChats }) => {
               <Avatar
                 size="md"
                 cursor="pointer"
-                src={currentUser.picture ? currentUser.picture : NO_USER_IMAGE}
+                src={
+                  currentUser?.picture ? currentUser?.picture : NO_USER_IMAGE
+                }
               />
             </MenuButton>
             <MenuList>
               <ProfileModal user={currentUser}>
-                <MenuItem fontWeight="900">{currentUser.name}</MenuItem>
+                <MenuItem fontWeight="900">{currentUser?.name}</MenuItem>
               </ProfileModal>
               <MenuDivider />
               <MenuItem fontWeight="900" onClick={() => logout()}>

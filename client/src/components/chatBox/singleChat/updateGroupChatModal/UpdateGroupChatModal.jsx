@@ -50,7 +50,6 @@ const UpdateGroupChatModal = ({
         userId: user._id,
         chatId: selectedChat._id,
       });
-      console.log(res);
       setSelectedChat(res?.data?.data);
       setFetchAgain(!fetchAgain);
       fetchAllMessages();
@@ -146,7 +145,6 @@ const UpdateGroupChatModal = ({
         chatId: selectedChat._id,
         chatName: groupChatName,
       });
-      console.log(res);
       toast({
         title: "Group name updated successfully.",
         status: "success",

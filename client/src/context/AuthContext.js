@@ -45,7 +45,6 @@ export const AuthContextProvider = ({ children }) => {
         position: "top",
       });
     } catch (err) {
-      console.log(err);
       toast({
         title: "Something went wrong!",
         description: err.response?.data?.message || "Internal server error!",

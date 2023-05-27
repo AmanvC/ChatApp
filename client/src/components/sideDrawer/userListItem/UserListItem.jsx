@@ -28,15 +28,15 @@ const UserListItem = ({ user, handleFunction }) => {
         size="lg"
         bg="#006666"
         color="white"
-        name={user.name}
-        src={user.picture}
+        name={user?.name}
+        src={user?.picture}
       />
       <Box>
-        <Text fontSize="1.5em">{user.name}</Text>
+        <Text fontSize="1.5em">{user?.name}</Text>
         <Text>
           <small>
             <b>Email: </b>
-            {user.email}
+            {user?.email}
           </small>
         </Text>
       </Box>

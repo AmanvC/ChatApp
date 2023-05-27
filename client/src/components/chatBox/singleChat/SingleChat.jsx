@@ -83,7 +83,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       const res = await makeRequest().get(`/messages/${selectedChat._id}`);
       setMessages(res.data?.data);
       setLoading(false);
-      console.log(res.data.data);
       socket.emit("join chat", selectedChat._id);
     } catch (err) {
       toast({
@@ -139,7 +138,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDifference = timeNow - lastTypingTime;
-      console.log(timeDifference);
       if (timeDifference >= timerLength && typing) {
         socket.emit("stop typing", selectedChat._id);
         setTyping(false);

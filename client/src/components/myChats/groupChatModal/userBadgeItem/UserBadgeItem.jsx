@@ -17,7 +17,7 @@ const UserBadgeItem = ({ user, handleFunction, isCurrentUserAdmin }) => {
       gap="2"
       userSelect="none"
     >
-      <Text>{user.name}</Text>
+      <Text>{user?.name}</Text>
       {isCurrentUserAdmin && (
         <CloseIcon fontSize="0.6em" cursor="pointer" onClick={handleFunction} />
       )}

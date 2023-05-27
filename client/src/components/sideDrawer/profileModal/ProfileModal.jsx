@@ -29,22 +29,22 @@ const ProfileModal = ({ user, children }) => {
             fontFamily="Work sans"
             textAlign="center"
           >
-            {user.name}
+            {user?.name}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody display="flex" justifyContent="center">
             <VStack gap="8">
               <Image
                 src={
-                  user.picture
-                    ? user.picture
+                  user?.picture
+                    ? user?.picture
                     : "https://icon-library.com/images/no-user-image-icon/no-user-image-icon-0.jpg"
                 }
                 borderRadius="full"
                 boxSize="200px"
-                alt={user.name}
+                alt={user?.name}
               />
-              <Text fontSize="1.5em">{user.email}</Text>
+              <Text fontSize="1.5em">{user?.email}</Text>
             </VStack>
           </ModalBody>
 

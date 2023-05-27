@@ -75,7 +75,7 @@ const GroupChatModal = ({ children, allChats, setAllChats }) => {
     for (const u of selectedUsers) {
       if (JSON.stringify(u) === JSON.stringify(user)) {
         toast({
-          title: `${user.name} is already selected!`,
+          title: `${user?.name} is already selected!`,
           status: "warning",
           duration: 4000,
           isClosable: true,
@@ -257,7 +257,7 @@ const GroupChatModal = ({ children, allChats, setAllChats }) => {
               colorScheme="teal"
               onClick={handleSubmit}
               isDisabled={
-                !groupChatName || selectedUsers.length < 2 || formSubmitLoading
+                !groupChatName || selectedUsers?.length < 2 || formSubmitLoading
               }
             >
               {!formSubmitLoading ? "Create Group" : "Creating Group..."}
